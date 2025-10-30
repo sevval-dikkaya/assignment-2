@@ -2,6 +2,9 @@
 
 A Python script that parses an Excel spreadsheet with multiple tabs containing different types of map data and creates an interactive Folium map.
 
+## Example Output
+- [Map w/ Lines](map_with_lines.html)
+
 ## Features
 
 - **Markers**: Point locations with custom icons and colors
