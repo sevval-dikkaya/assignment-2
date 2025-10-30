@@ -76,8 +76,21 @@ def add_markers(map_obj, df_markers, use_cluster=True):
 
 
 def add_lines(map_obj, df_lines):
-    pass
-
+    """Add lines from dataframe to map."""
+    if df_lines is None or df_lines.empty:
+        return
+    
+    for _, row in df_lines.iterrows():
+        coordinates = parse_coordinate_string(row.get('coordinates'))
+        if coordinates:
+            folium.PolyLine(
+                locations=coordinates,
+                popup=row.get('name', 'Area'),
+                tooltip=row.get('name', 'Area'),
+                color=row.get('color', 'blue'),
+                weight=row.get('weight', 3),
+                opacity=row.get('opacity', 0.7)
+            ).add_to(map_obj)
 
 def add_polygons(map_obj, df_polygons):
     """Add polygons/areas from dataframe to map."""
@@ -139,7 +152,7 @@ def add_circles(map_obj, df_circles):
 
 
 def create_map_from_excel(excel_file, output_file='map.html',
-                          center_lat=None, center_lon=None, zoom_start=10):
+                          center_lat=None, center_lon=None, zoom_start=4):
     """
     Create a folium map from an Excel file with multiple tabs.
 
@@ -154,7 +167,7 @@ def create_map_from_excel(excel_file, output_file='map.html',
     center_lon : float, optional
         Center longitude (auto-calculated if not provided)
     zoom_start : int
-        Initial zoom level (default: 10)
+        Initial zoom level (default: 4)
     """
 
     # Read all sheets from Excel file
@@ -164,9 +177,11 @@ def create_map_from_excel(excel_file, output_file='map.html',
 
     # Extract dataframes for each tab
     df_markers = excel_data.get('markers')
+    df_lines = excel_data.get('lines')
     df_polygons = excel_data.get('polygons')
     df_heatmap = excel_data.get('heatmap')
     df_circles = excel_data.get('circles')
+
 
     # Calculate map center if not provided
     if center_lat is None or center_lon is None:
@@ -203,6 +218,9 @@ def create_map_from_excel(excel_file, output_file='map.html',
 
     print("Adding polygons...")
     add_polygons(m, df_polygons)
+
+    print("Adding lines...")
+    add_lines(m, df_lines)
 
     print("Adding circles...")
     add_circles(m, df_circles)
