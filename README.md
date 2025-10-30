@@ -172,6 +172,7 @@ Common Folium/Font Awesome icons:
 
 The script generates an interactive HTML map with:
 - Zoom and pan controls
+- Initial zoom level set s.t. whole country visible
 - Layer switcher for different map styles
 - Clickable markers with popups
 - Legend for different elements
